@@ -1,8 +1,10 @@
 package edu.up.cannonanimationhw3a;
 
-import android.os.Bundle;
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 
@@ -18,8 +20,10 @@ import android.widget.SeekBar;
  */
 public class CannonMainActivity extends Activity {
 
-	private int cannonAngle;
+	private double cannonAngle;
+	private double angle;
 	private SeekBar cannonAngleSeekBar;
+    private CannonAnimator testAnim;
 	protected final int MAX_ANGLE = 90;
 
 	/**
@@ -36,7 +40,7 @@ public class CannonMainActivity extends Activity {
 		cannonAngleSeekBar.setOnSeekBarChangeListener(new cannonAngleSeekBarListener());
 
 		// Create an animation canvas and place it in the main layout
-		Animator testAnim = new CannonAnimator();
+		testAnim = new CannonAnimator();
 		AnimationCanvas myCanvas = new AnimationCanvas(this, testAnim);
 		LinearLayout mainLayout = (LinearLayout) this.findViewById(R.id.topLevelLayout);
 		mainLayout.addView(myCanvas);
@@ -47,6 +51,9 @@ public class CannonMainActivity extends Activity {
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 			cannonAngle = progress;
+            testAnim.setAngle(Math.toRadians(cannonAngle));
+			angle = cannonAngle;
+
 		}
 
 		@Override
@@ -69,7 +76,7 @@ public class CannonMainActivity extends Activity {
 		return true;
 	}
 
-	public int getAngle() {
-		return cannonAngle;
+	public double getAngle() {
+		return this.angle;
 	}
 }

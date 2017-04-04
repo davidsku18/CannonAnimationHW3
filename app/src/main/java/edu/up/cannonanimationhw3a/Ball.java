@@ -1,35 +1,34 @@
 package edu.up.cannonanimationhw3a;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 
 /**
  * Created by kurtisdavidson on 4/2/17.
  */
 
-public class Ball extends CustomElement{
+public class Ball {
 
-    private float xPos;
-    private float yPos;
+    private int xPos;
+    private int yPos;
     private int radius;
-    private double xVelocity;
-    private double yVelocity;
+    private double velocity;
     private double xAcceleration;
     private double yAcceleration;
+    private double angle;
+    private int negOne = -1;
     private Paint ballPaint = new Paint();
 
-    public Ball(String name, int color, float x, float y,  int radius, double initXVel,
-                double initYVal, double initXAccel, double initYAccel)
+    public Ball(int x, int y, int radius, double velocity, double initXAccel, double initYAccel, double initAngle)
     {
-        super(name, color);
-
         this.xPos = x;
         this.yPos = y;
         this.radius = radius;
-        this.xVelocity = initXVel;
-        this.yVelocity = initYVal;
+        this.velocity = velocity;
         this.xAcceleration = initXAccel;
         this.yAcceleration = initYAccel;
+        this.angle = initAngle;
     }
 
     /**
@@ -48,24 +47,6 @@ public class Ball extends CustomElement{
      */
     public void setBallYAcceleration(double newYAcceleration) {
         yAcceleration = newYAcceleration;
-    }
-
-    /**
-     * Sets a new velocity for the ball
-     * @param newXVelocity
-     *          the ball's new x velocity
-     */
-    public void setBallXVelocity(int newXVelocity) {
-        xVelocity = newXVelocity;
-    }
-
-    /**
-            * Sets a new velocity for the ball
-     * @param newYVelocity
-     *          the ball's new y velocity
-            */
-    public void setBallYVelocity(int newYVelocity) {
-        yVelocity = newYVelocity;
     }
 
     /**
@@ -91,8 +72,8 @@ public class Ball extends CustomElement{
      * @return xPos
      *          the ball's x position
      */
-    public double getBallXPos () {
-        return xPos;
+    public int getBallXPos () {
+        return this.xPos;
     }
 
     /**
@@ -100,26 +81,17 @@ public class Ball extends CustomElement{
      * @return yPos
      *          the ball's y position
      */
-    public double getBallYPos() {
-        return yPos;
+    public int getBallYPos() {
+        return this.yPos;
     }
 
     /**
-     * Gets the ball's current x velocity
+     * Gets the ball's current velocity
      * @return velocity
      *          the ball's velocity
      */
-    public double getBallXVelocity() {
-        return xVelocity;
-    }
-
-    /**
-     * Gets the ball's current y velocity
-     * @return velocity
-     *          the ball's velocity
-     */
-    public double getBallYVelocity() {
-        return yVelocity;
+    public double getVelocity() {
+        return this.velocity;
     }
 
     /**
@@ -129,7 +101,7 @@ public class Ball extends CustomElement{
      *
      */
     public double getBallXAcceleration() {
-        return xAcceleration;
+        return this.xAcceleration;
     }
 
     /**
@@ -139,31 +111,15 @@ public class Ball extends CustomElement{
      *
      */
     public double getBallYAcceleration() {
-        return yAcceleration;
+        return this.yAcceleration;
     }
 
-    public void move (int dt) {
-        // update position
-        xPos += xVelocity;
-        yPos += yVelocity;
-
-        // v = v0 + a * dt
-        xVelocity += xAcceleration * dt;
-        yVelocity+= yAcceleration * dt;
-
-
-    }
-
-    public boolean containsPoint(int x, int y) {
-        //Calculate the distance between this point and the center
-        int xDist = Math.abs(x - (int)(this.xPos));
-        int yDist = Math.abs(y - (int)(this.yPos));
-        int dist = (int)Math.sqrt(xDist*xDist + yDist*yDist);  //Thanks, Pythagoras :)
-
-        return (dist < this.radius + TAP_MARGIN);
-    }//contaisPoint
-
-    public void drawMe(Canvas canvas) {
+    public void drawMe(Canvas canvas, int time) {
+        this.xPos = (int) (this.xPos + (this.velocity * Math.cos(angle) * (time)));
+        this.yPos = (int) (this.yPos + ((this.velocity * Math.sin(angle) * (negOne)) * (time) +
+                (0.5 * 7 * (time) * (time))));
+        ballPaint.setColor(Color.BLACK);
+        canvas.rotate((float)angle, (float) xPos, (float) yPos );
         canvas.drawCircle(xPos, yPos, radius, ballPaint);  //main circle
     }
 }

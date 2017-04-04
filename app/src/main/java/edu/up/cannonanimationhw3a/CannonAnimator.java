@@ -2,11 +2,10 @@ package edu.up.cannonanimationhw3a;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Rect;
+import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
-
-import java.util.ArrayList;
+import android.view.View;
 
 /**
  * Created by kurtisdavidson on 4/2/17.
@@ -15,33 +14,37 @@ import java.util.ArrayList;
 public class CannonAnimator extends CannonMainActivity implements Animator{
     // instance variables
     private int count = 0; // counts the number of logical clock ticks
+    int width;
+    int height;
 
-    ArrayList<Ball> balls = new ArrayList<Ball>();
-
+    //ArrayList<Ball> balls = new ArrayList<>();
     private int cannonLeft = 0;
-    private int cannonTop = 1400;
-    private int cannonRight = 200;
-    private int cannonBottom = 1500;
-    private int cannonAngle = getAngle();
+    private int cannonTop = 1000;
+    private int cannonRight = 400;
+    private int cannonBottom = 1200;
+    private int touchX;
+    private int touchY;
 
-    private float xDisplacement;
-    private float yDisplacement;
+    private double xDisplacement;
+    private double yDisplacement;
+    private double newXDisplacement;
+    private double newYDisplacement;
 
+    private double velocity=40;
     private double ballXVelocity;
     private double ballYVelocity;
     private double ballXAcceleration;
     private double ballYAcceleration;
-    private float ballXPos = xDisplacement;
-    private float ballYPos = yDisplacement;
-    private int ballRadius = 20;
-
-    private double gravity = 9.81;
-
+    private float ballXPos = 50;
+    private float ballYPos = 1100;
+    private int ballRadius = 40;
+    private double angle;
+    private float degrees;
 
     // Creating our Cannon and Ball objects
-    Cannon cannon = new Cannon("The Cannon", Color.BLACK, cannonLeft, cannonTop, cannonRight, cannonBottom, cannonAngle);
-    Ball ball = new Ball("The Cannon's ball", Color.RED, ballXPos, ballYPos, ballRadius, ballXVelocity,
-            ballYVelocity, ballXAcceleration, ballYAcceleration);
+    Cannon cannon = new Cannon(cannonLeft, cannonTop, cannonRight, cannonBottom, angle);
+    Ball newBall = new Ball(cannonRight, cannonBottom, ballRadius, velocity, ballXAcceleration, ballYAcceleration, angle);
+
     private boolean goBackwards = false; // whether clock is ticking backwards
 
     /**
@@ -50,7 +53,7 @@ public class CannonAnimator extends CannonMainActivity implements Animator{
      *
      * @return the time interval between frames, in milliseconds.
      */
-    public int interval() { return 30; }
+    public int interval() { return 1; }
 
     /**
      * The background color: a light blue.
@@ -76,48 +79,23 @@ public class CannonAnimator extends CannonMainActivity implements Animator{
     /**
      * Action to perform on clock tick
      *
-     * @param g the graphics object on which to draw
+     * @param canvas the graphics object on which to draw
      */
-    public void tick(Canvas g) {
+    public void tick(Canvas canvas) {
+
         // bump our count either up or down by one, depending on whether
         // we are in "backwards mode".
-        if (goBackwards) {
-            count--;
-        }
-        else {
-            count++;
-        }
+
+        count++;
 
         // Determine the pixel position of our ball.  Multiplying by 15
         // has the effect of moving 15 pixel per frame.  Modding by 600
         // (with the appropriate correction if the value was negative)
         // has the effect of "wrapping around" when we get to either end
         // (since our canvas size is 600 in each dimension).
-        xDisplacement = (count*15)%2000;
-        if (xDisplacement < 0) xDisplacement += 2000;
 
-        yDisplacement = (count*15)%2000;
-        if (yDisplacement < 0) yDisplacement += 2000;
-
-        for ( int i = 0; i < balls.size(); ++i) {
-            balls.add(ball);
-        }
-
-        // Draw the ball in the correct position.
-
-        //gets ball's xVelocity
-
-        ball.setBallXAcceleration(10);
-        ball.setBallYAcceleration(10);
-
-        onDraw(g);
-        /*
-        if (ball.getBallYVelocity() == 0)
-        {
-            ball.setBallYAcceleration(-9.81);
-            onDraw(g);
-        }
-        */
+        newBall.drawMe(canvas, count);
+        cannon.drawMe(canvas, (-60)*angle);
     }
 
     /**
@@ -145,24 +123,51 @@ public class CannonAnimator extends CannonMainActivity implements Animator{
     {
         if (event.getAction() == MotionEvent.ACTION_DOWN)
         {
-            goBackwards = !goBackwards;
+            fireCannon();
         }
+
+    }
+/*
+    public void pivotCannon (View view, float pivotX, float pivotY){
+        if (view.getPivotX() == pivotX && view.getPivotY() == pivotY) {
+            return;
+        }
+
+        float[] prevPoint = { 0.0f, 0.0f };
+        view.getMatrix().mapPoints(prevPoint);
+
+        view.setPivotX(pivotX);
+        view.setPivotY(pivotY);
+
+        float[] currPoint = { 0.0f, 0.0f };
+        view.getMatrix().mapPoints(currPoint);
+
+        float offsetX = currPoint[0] - prevPoint[0];
+        float offsetY = currPoint[1] - prevPoint[1];
+
+        view.setTranslationX(view.getTranslationX() - offsetX);
+        view.setTranslationY(view.getTranslationY() - offsetY);
+
     }
 
-    /**
-     * Prints the cannon and ball
-     * @param canvas
-     *          The canvas
-     */
-    public void onDraw (Canvas canvas)
-    {
-        for(Ball b : balls)
-        {
-            b.move(count);
-            b.drawMe(canvas);
+    public void rotate(double angle) {
+        if ((angle <= Math.toRadians(90) && degrees > 0) || (angle >= -Math.toRadians(90) && degrees < 0)) {
+            Matrix newMatrix = new Matrix();
+            newMatrix.setRotate(degrees, 0, cannonpivotY);
+            cannon.transform(newMatrix);
+            rotate += degrees;
         }
-        canvas.rotate(cannonAngle);
-        cannon.drawMe(canvas);
-        ball.drawMe(canvas);
+    }
+    */
+    public void fireCannon()
+    {
+        count = 0;
+        newBall = new Ball(cannonRight, cannonBottom, ballRadius, velocity, ballXAcceleration, ballYAcceleration, angle);
+        cannon = new Cannon(0, cannonTop, cannonRight, cannonBottom , -(1)*angle);
+    }
+
+    public void setAngle(double angle)
+    {
+        this.angle = angle;
     }
 }

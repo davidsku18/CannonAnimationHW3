@@ -94,14 +94,12 @@ public class Ball {
         return this.velocity;
     }
 
-
     public void drawMe(Canvas canvas, int time, int x, int y, double rotationAngle) {
         ballPaint.setColor(Color.BLACK);
         // rotates the canvas about some point
         canvas.save();
         canvas.rotate((float)rotationAngle, (float)x , (float)y);
         canvas.restore();
-        canvas.drawCircle((float) xPos, (float) yPos, radius, ballPaint);
         this.xPos = (int) (this.xPos + (this.velocity * Math.cos(angle) * (time)));
         this.yPos = (int) (this.yPos + ((this.velocity * Math.sin(angle) * (negOne)) * (time) +
                 (0.5 * 7 * (time) * (time))));

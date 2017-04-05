@@ -6,7 +6,10 @@ import android.view.MotionEvent;
 
 
 /**
- * Created by kurtisdavidson on 4/2/17.
+ *
+ *
+ * @author kurtisdavidson
+ * @version 4/2/17.
  */
 
 public class CannonAnimator implements Animator{
@@ -15,28 +18,23 @@ public class CannonAnimator implements Animator{
 
     // Cannon's initial values
     private int cannonLeft = 0;
-    private int cannonTop = 1000;
+    private int cannonTop = 900;
     private int cannonRight = 600;
-    private int cannonBottom = 1250;
+    private int cannonBottom = 1100;
 
     // Ball's velocity when it's fired
-    private double velocity=40;
+    private double velocity=50;
 
     // Ball's initial values
     private int ballRadius = 40;
     private double angle;
-    private double ballXPos = cannonBottom/(Math.tan(-1*angle));
-    private double ballYPos = (Math.tan(-1*angle)*(cannonRight));
-
-    private int targetX = 1300;
-    private int targetY = 300;
+    private double ballXPos;
+    private double ballYPos;
 
     // Creating our Cannon and Ball objects
     Cannon cannon = new Cannon(cannonLeft, cannonTop, cannonRight, cannonBottom, angle);
     Ball newBall = new Ball(ballXPos, ballYPos, ballRadius, velocity, angle);
-    Target target = new Target(0, 0);
-
-    private boolean goBackwards = false; // whether clock is ticking backwards
+    Target target = new Target(1300, 300);
 
     /**
      * Interval between animation frames: .03 seconds (i.e., about 33 times
@@ -63,17 +61,19 @@ public class CannonAnimator implements Animator{
      */
     public void tick(Canvas canvas) {
         count++;
-        ballXPos = cannonBottom/(Math.tan(-1*angle));
-        ballYPos = ((Math.tan(-1*angle))*(cannonRight));
+
+        ballXPos = cannonRight;//ballXPos = ((cannonBottom*Math.sin(angle))/((magnitude*(Math.tan(angle)))*(Math.cos(angle))));
+        ballYPos = cannonBottom;//ballYPos = (((magnitude*(Math.tan(angle)))*(cannonRight*Math.cos(angle)))/(Math.sin(angle)));
 
         newBall.drawMe(canvas, count, (int)ballXPos, (int)ballYPos, Math.toDegrees(-1*angle));
         cannon.drawMe(canvas, Math.toDegrees(-1*angle));
         target.drawMe(canvas);
-
+        /*
         if (newBall.getBallXPos() >= target.getTargetX() && newBall.getBallYPos() >= target.getTargetY())
         {
             target.targetHit();
         }
+        */
 
     }
 
@@ -106,7 +106,7 @@ public class CannonAnimator implements Animator{
         //if screen is touched the cannon will fire
         if (event.getAction() == MotionEvent.ACTION_DOWN)
         {
-            fireCannon();
+            //fireCannon();
         }
     }
     /**
@@ -117,7 +117,7 @@ public class CannonAnimator implements Animator{
     {
         count = 0;
         newBall = new Ball(ballXPos, ballYPos, ballRadius, velocity, angle);
-        cannon = new Cannon(0, cannonTop, cannonRight, cannonBottom , angle);
+        cannon = new Cannon(cannonLeft, cannonTop, cannonRight, cannonBottom, angle);
     }
 
     public void setAngle(double angle)

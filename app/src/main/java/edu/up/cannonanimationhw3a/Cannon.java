@@ -51,9 +51,11 @@ public class Cannon {
         return this.angle;
     }
 
-    public void drawMe(Canvas canvas, double angle) {
+    public void drawMe(Canvas canvas, double RotationAngle) {
         cannonDefaultPaint.setColor(Color.BLACK);
-        canvas.rotate((float)angle, (float)left, (float) top);// rotates the cannon's barrel when angle is adjusted
+        canvas.save();
+        canvas.rotate((float)RotationAngle, (float)left, (float) top);// rotates the cannon's barrel when angle is adjusted
         canvas.drawRect(left, top, right, bottom , cannonDefaultPaint);
+        canvas.restore();
     }
 }

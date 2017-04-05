@@ -21,7 +21,6 @@ import android.widget.SeekBar;
 public class CannonMainActivity extends Activity {
 
 	private double cannonAngle;
-	private double angle;
 	private SeekBar cannonAngleSeekBar;
     private CannonAnimator testAnim;
 	protected final int MAX_ANGLE = 90;
@@ -52,8 +51,6 @@ public class CannonMainActivity extends Activity {
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 			cannonAngle = progress;
             testAnim.setAngle(Math.toRadians(cannonAngle));
-			angle = cannonAngle;
-
 		}
 
 		@Override
@@ -74,9 +71,5 @@ public class CannonMainActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.cannon_main, menu);
 		return true;
-	}
-
-	public double getAngle() {
-		return this.angle;
 	}
 }

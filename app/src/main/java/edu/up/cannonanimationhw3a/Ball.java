@@ -10,45 +10,36 @@ import android.graphics.Paint;
 
 public class Ball {
 
-    private int xPos;
-    private int yPos;
+    private double xPos;
+    private double yPos;
     private int radius;
     private double velocity;
-    private double xAcceleration;
-    private double yAcceleration;
     private double angle;
     private int negOne = -1;
     private Paint ballPaint = new Paint();
 
-    public Ball(int x, int y, int radius, double velocity, double initXAccel, double initYAccel, double initAngle)
+
+    /**
+     * Ctor for our Ball object
+     * @param x
+     *          the ball's x position
+     * @param y
+     *          the balls's y position
+     * @param radius
+     *          the ball's radius
+     * @param velocity
+     *          the ball's velocity
+     * @param initAngle
+     *          the ball's angle
+     */
+    public Ball(double x, double y, int radius, double velocity, double initAngle)
     {
         this.xPos = x;
         this.yPos = y;
         this.radius = radius;
         this.velocity = velocity;
-        this.xAcceleration = initXAccel;
-        this.yAcceleration = initYAccel;
         this.angle = initAngle;
     }
-
-    /**
-     * Sets a new acceleration for the ball
-     * @param newXAcceleration
-     *          the ball's new acceleration
-     */
-    public void setBallXAcceleration(double newXAcceleration) {
-        xAcceleration = newXAcceleration;
-    }
-
-    /**
-     * Sets a new acceleration for the ball
-     * @param newYAcceleration
-     *          the ball's new acceleration
-     */
-    public void setBallYAcceleration(double newYAcceleration) {
-        yAcceleration = newYAcceleration;
-    }
-
     /**
      * Sets a new x position for the ball
      * @param newXPos
@@ -68,11 +59,20 @@ public class Ball {
     }
 
     /**
+     * Sets a new y position for the ball
+     * @param newVelocity
+     *          the ball's new y position
+     */
+    public void setBallYPos (double newVelocity) {
+        velocity = newVelocity;
+    }
+
+    /**
      * Gets the ball's current x position
      * @return xPos
      *          the ball's x position
      */
-    public int getBallXPos () {
+    public double getBallXPos () {
         return this.xPos;
     }
 
@@ -81,7 +81,7 @@ public class Ball {
      * @return yPos
      *          the ball's y position
      */
-    public int getBallYPos() {
+    public double getBallYPos() {
         return this.yPos;
     }
 
@@ -94,32 +94,17 @@ public class Ball {
         return this.velocity;
     }
 
-    /**
-     * Gets the ball's current x acceleration
-     * @return acceleration
-     *          the ball's acceleration
-     *
-     */
-    public double getBallXAcceleration() {
-        return this.xAcceleration;
-    }
 
-    /**
-     * Gets the ball's current y acceleration
-     * @return acceleration
-     *          the ball's acceleration
-     *
-     */
-    public double getBallYAcceleration() {
-        return this.yAcceleration;
-    }
-
-    public void drawMe(Canvas canvas, int time) {
+    public void drawMe(Canvas canvas, int time, int x, int y, double rotationAngle) {
+        ballPaint.setColor(Color.BLACK);
+        // rotates the canvas about some point
+        canvas.save();
+        canvas.rotate((float)rotationAngle, (float)x , (float)y);
+        canvas.restore();
+        canvas.drawCircle((float) xPos, (float) yPos, radius, ballPaint);
         this.xPos = (int) (this.xPos + (this.velocity * Math.cos(angle) * (time)));
         this.yPos = (int) (this.yPos + ((this.velocity * Math.sin(angle) * (negOne)) * (time) +
                 (0.5 * 7 * (time) * (time))));
-        ballPaint.setColor(Color.BLACK);
-        canvas.rotate((float)angle, (float) xPos, (float) yPos );
-        canvas.drawCircle(xPos, yPos, radius, ballPaint);  //main circle
+        canvas.drawCircle((float) xPos, (float) yPos, radius, ballPaint);
     }
 }

@@ -2,14 +2,13 @@ package edu.up.cannonanimationhw3a;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.RectF;
 
 /**
- * Created by kurtisdavidson on 4/2/17.
+ * Our Cannon object
+ *
+ * @author Kurtis Davidson
+ * @version 4/5/2017
  */
 
 public class Cannon {
@@ -29,30 +28,11 @@ public class Cannon {
         this.angle = initAngle;
     }
 
-    public void setCannonXPos (int newXPos) {
-        left = newXPos;
-    }
-
-    public void setCannonYPos (int newYPos) {
-        top = newYPos;
-    }
-
-    public void setCannonAngle (int newAngle) {
-        angle = newAngle;
-    }
-
-    public int getCannonXPos() {
-        return this.left;
-    }
-
-    public int getCannonYPos() {
-        return this.top;
-    }
-
-    public double getCannonAngle() {
-        return this.angle;
-    }
-
+    /**
+     * Draws the cannon with it's adjusted angle
+     * @param canvas
+     * @param RotationAngle
+     */
     public void drawMe(Canvas canvas, double RotationAngle) {
         cannonDefaultPaint.setColor(Color.BLACK);
         centerY = ((bottom-top)/2+top);

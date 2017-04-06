@@ -23,9 +23,9 @@ public class CannonMainActivity extends Activity {
 
 	private double cannonAngle;
 	private SeekBar cannonAngleSeekBar;
-    private CannonAnimator cannonAnimation;
-    private TextView currentAngle;
+    private CannonAnimator testAnim;
     private Button fire;
+    private TextView currentAngle;
 	protected final int MAX_ANGLE = 90;
 
 	/**
@@ -36,18 +36,18 @@ public class CannonMainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_cannon_main);
 
+
         fire = (Button) findViewById(R.id.fire);
-        cannonAngleSeekBar = (SeekBar) findViewById(R.id.cannonAngleSeekBar);
         currentAngle = (TextView) findViewById(R.id.currentAngle);
+		cannonAngleSeekBar = (SeekBar) findViewById(R.id.cannonAngleSeekBar);
+		cannonAngleSeekBar.setMax(MAX_ANGLE);
 
-        fire.setOnClickListener(new fireOnClickListener());
-        cannonAngleSeekBar.setOnSeekBarChangeListener(new cannonAngleSeekBarListener());
-        cannonAngleSeekBar.setMax(MAX_ANGLE);
-
+        fire.setOnClickListener(new fireOnListener());
+		cannonAngleSeekBar.setOnSeekBarChangeListener(new cannonAngleSeekBarListener());
 
 		// Create an animation canvas and place it in the main layout
-		cannonAnimation = new CannonAnimator();
-		AnimationCanvas myCanvas = new AnimationCanvas(this, cannonAnimation);
+		testAnim = new CannonAnimator();
+		AnimationCanvas myCanvas = new AnimationCanvas(this, testAnim);
 		LinearLayout mainLayout = (LinearLayout) this.findViewById(R.id.topLevelLayout);
 		mainLayout.addView(myCanvas);
 	}
@@ -57,9 +57,8 @@ public class CannonMainActivity extends Activity {
 		@Override
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 			cannonAngle = progress;
-            currentAngle.setText(" "+progress);
-            cannonAnimation.setAngle(Math.toRadians(cannonAngle));
-
+            currentAngle.setText(""+cannonAngle);
+            testAnim.setAngle(Math.toRadians(cannonAngle));
 		}
 
 		@Override
@@ -73,12 +72,12 @@ public class CannonMainActivity extends Activity {
 		}
 	}
 
-	public class fireOnClickListener implements View.OnClickListener {
+	public class fireOnListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            if(v.getId() == R.id.fire) {
-                cannonAnimation.fireCannon();
+            if (v.getId() == fire.getId()) {
+                testAnim.fireCannon();
             }
         }
     }

@@ -1,46 +1,55 @@
 package edu.up.cannonanimationhw3a;
 
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 
 /**
  * Created by kurtisdavidson on 4/4/17.
  */
 
-public class Target {
+public class Target extends CircleElement{
 
-    private int x;
-    private int y;
-    private Paint targetOuterPaint = new Paint();
-    private Paint targetInnerPaint = new Paint();
-    private Paint targetCenterPaint = new Paint();
+    private int targetOuterPaint;
+    private int radius = 80;
 
-    public Target ( int initX, int initY) {
-        this.x = initX;
-        this.y = initY;
+    public Target ( int x, int y, int radius) {
+        super(x, y, radius);
+
+        targetOuterPaint = Color.RED;
+        paint.setColor(targetOuterPaint);
     }
 
+    /**
+     * Gets the target's x coordinate
+     * @return x
+     *          the x position
+     */
     public int getTargetX() {
         return this.x;
     }
 
+    /**
+     * Gets the target's y coordinate
+     * @return y
+     *          the y position
+     */
     public int getTargetY() {
         return this.y;
     }
 
-    public void targetHit() {
-        targetCenterPaint.setColor(Color.YELLOW);
-        targetInnerPaint.setColor(Color.YELLOW);
-        targetOuterPaint.setColor(Color.YELLOW);
+    /**
+     * Determines whether the target was hit and changes
+     * the color of the target to yellow if hit
+     *
+     * @param hit
+     *          if the target was hit
+     */
+    public void hitTarget(boolean hit)
+    {
+        if(hit)
+        {
+            targetOuterPaint = Color.YELLOW;
+        }
+        paint.setColor(targetOuterPaint);
     }
 
-    public void drawMe(Canvas canvas) {
-        targetOuterPaint.setColor(Color.RED);
-        canvas.drawCircle(1100, 500, 90, targetOuterPaint);
-        targetInnerPaint.setColor(Color.WHITE);
-        canvas.drawCircle(1100, 500, 60, targetInnerPaint);
-        targetCenterPaint.setColor(Color.RED);
-        canvas.drawCircle(1100, 500, 30, targetCenterPaint);
-    }
 }

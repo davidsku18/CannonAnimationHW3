@@ -35,7 +35,7 @@ public class CannonAnimator implements Animator {
     private int targetX = 1300;
     private int targetY = 300;
     private int target2X = 1300;
-    private int target2Y = 600;
+    private int target2Y = 800;
     private int targetRadius = 80;
 
     // Creating our Cannon and Ball objects
@@ -79,11 +79,11 @@ public class CannonAnimator implements Animator {
         cannon.drawMe(canvas, Math.toDegrees(-1 * angle));
 
         // checks if targets were hit and changes the targets color
-        if (newBall.getX() >= targetX && newBall.getX() < targetX + 160
-                && newBall.getY() >= targetY && newBall.getY() < targetY + 160) {
+        if (newBall.getX() >= targetX-160 && newBall.getX() < targetX + 160
+                && newBall.getY() >= targetY-160 && newBall.getY() < targetY + 160) {
             target.hitTarget(true);
-        } else if (newBall.getX() >= target2X && newBall.getX() < target2X + 160
-                && newBall.getY() >= target2Y && newBall.getY() < target2Y + 160) {
+        } else if (newBall.getX() >= target2X-160 && newBall.getX() < target2X + 160
+                && newBall.getY() >= target2Y-160 && newBall.getY() < target2Y + 160) {
             target2.hitTarget(true);
         }
     }

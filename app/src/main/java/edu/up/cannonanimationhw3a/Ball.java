@@ -10,7 +10,8 @@ import android.graphics.Paint;
 
 public class Ball{
 
-    private double velocity;
+    private int velocity;
+    private double gravity;
     private double angle;
     private int radius;
     private int negOne = -1;
@@ -26,18 +27,17 @@ public class Ball{
      *          the balls's y position
      * @param radius
      *          the ball's radius
-     * @param velocity
-     *          the ball's velocity
      * @param initAngle
      *          the ball's angle
      */
-    public Ball(int initX, int initY, int radius, double velocity, double initAngle)
+    public Ball(int initX, int initY, int initVel, double initAngle, int radius, double initGravity)
     {
         this.x = initX;
         this.y = initY;
+        this.velocity = initVel;
         this.radius = radius;
-        this.velocity = velocity;
         this.angle = initAngle;
+        this.gravity = initGravity;
     }
 
     /**
@@ -60,19 +60,14 @@ public class Ball{
      * @param canvas
      *          the canvas
      * @param time
-     *          the time
-     * @param rotationAngle
-     *          the angle
+     *          the time which will adjust the trajectory
      */
-    public void drawMe(Canvas canvas, int time, double rotationAngle) {
+    public void drawMe(Canvas canvas, int time) {
         ballPaint.setColor(Color.BLACK);
-        // rotates the canvas about some point
-        canvas.save();
-        canvas.rotate((float)rotationAngle, (float)x , (float)y);
-        canvas.restore();
-        this.x = (int) (this.x + (this.velocity * Math.cos(angle) * (time)));
-        this.y = (int) (this.y + ((this.velocity * Math.sin(angle) * (negOne)) * (time) +
-                (0.5 * 10 * (time) * (time))));
+        this.x = (int) (this.x + (this.velocity * Math.cos(this.angle) * (time)));
+        this.y = (int) (this.y + ((this.velocity * Math.sin(this.angle) * (negOne)) * (time) +
+                (0.5 * this.gravity * (time) * (time))));
+
         canvas.drawCircle(x, y, radius, ballPaint);
     }
 }

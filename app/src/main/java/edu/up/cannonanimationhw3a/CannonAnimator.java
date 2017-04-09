@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.view.MotionEvent;
 
+import java.util.ArrayList;
+
 
 /**
  * Animates the ball when the ball is fired from the cannon
@@ -13,40 +15,46 @@ import android.view.MotionEvent;
  */
 
 public class CannonAnimator implements Animator {
+
     // instance variables
     private int count = 0; // counts the number of logical clock ticks
 
     // Cannon's initial values
-    private int cannonLeft = -40;
+    Cannon cannon = null;
+    private int cannonLeft = 0;
     private int cannonTop = 1000;
-    private int cannonRight = 600;
+    private int cannonRight = 200;
     private int cannonBottom = 1200;
+    private double angle;
 
     // Ball's velocity when it's fired
-    private double velocity = 60;
+    private int velocity = 60;
+    private double gravity;
 
-    // Ball's initial values
+    // Ball's values
     private int ballRadius = 80;
-    private double angle;
-    private int ballXPos = 0;
-    private int ballYPos = 1000;
 
     // Targets values
-    private int targetX = 1300;
-    private int targetY = 300;
-    private int target2X = 1300;
-    private int target2Y = 800;
     private int targetRadius = 80;
 
-    // Creating our Cannon and Ball objects
-    Cannon cannon = new Cannon(cannonLeft, cannonTop, cannonRight, cannonBottom, angle);
-    Ball newBall = new Ball(ballXPos, ballYPos, ballRadius, velocity, angle);
-    Target target = new Target(targetX, targetY, targetRadius);
-    Target target2 = new Target(target2X, target2Y, targetRadius);
-    Target target3 = new Target();
+    ArrayList<Target> targets;
+    ArrayList<Ball> cannonBalls;
 
     /**
-     * Interval between animation frames: .03 seconds (i.e., about 33 times
+     * Ctor for creating the cannonBalls and targets array list as
+     * well as the cannon object and creating the targets
+     */
+    public CannonAnimator()
+    {
+        cannonBalls = new ArrayList<>();
+        targets = new ArrayList<>();
+        cannon = new Cannon(cannonLeft, cannonTop, cannonRight, cannonBottom, angle);
+
+        createTargets();
+    }
+
+    /**
+     * Interval between animation frames: .001 seconds (i.e., about 100 times
      * per second).
      *
      * @return the time interval between frames, in milliseconds.
@@ -65,19 +73,22 @@ public class CannonAnimator implements Animator {
         return Color.rgb(180, 200, 255);
     }
 
-    private void initTargets()
+    /**
+     * Creates out targets and adds them to the array list
+     */
+    private void createTargets()
     {
-        Target target1 = new Target(1000,500);
-        Target target2 = new Target(700,150);
-        Target target3 = new Target(500,1000);
-        Target target4 = new Target(1300,900);
-        Target target5 = new Target(1600,300);
+        Target target1 = new Target(1300,300, targetRadius);
+        Target target2 = new Target(1400,800, targetRadius);
+        Target target3 = new Target(1200,1000, targetRadius);
+        Target target4 = new Target(1000,400, targetRadius);
+        Target target5 = new Target(800,800, targetRadius);
 
-        targets.add(t1);
-        targets.add(t2);
-        targets.add(t3);
-        targets.add(t4);
-        targets.add(t5);
+        targets.add(target1);
+        targets.add(target2);
+        targets.add(target3);
+        targets.add(target4);
+        targets.add(target5);
     }
     /**
      * Action to perform on clock tick
@@ -85,26 +96,39 @@ public class CannonAnimator implements Animator {
      * @param canvas the graphics object on which to draw
      */
     public void tick(Canvas canvas) {
+
+        //draws the targets
         count++;
-
-        for (Target: target) {
-            ta
+        for (Target t: targets) {
+            // checks if targets were hit and changes the targets color
+            t.drawMe(canvas);
         }
-        // drawing our objects
-        target.drawMe(canvas);
-        target2.drawMe(canvas);
-        newBall.drawMe(canvas, count, Math.toDegrees(-1 * angle));
+
+        for (Ball b : cannonBalls) {
+            // checks if ball goes out of the screen and removes it from the array list
+            if (b.getX() >= canvas.getWidth() || b.getY() >= canvas.getHeight() || b.getY() <= 0) {
+                b = null;
+                cannonBalls.remove(b);
+            }
+            else {
+                // drawing our cannonballs
+                b.drawMe(canvas, count);
+                for (Target t: targets) {
+                    // checks if the cannonball hit the target
+                    if(b.getX() >= t.getTargetX() - 160 && b.getX() < t.getTargetX() + 160
+                            && b.getY() >= t.getTargetY() - 160 && b.getY() < t.getTargetY() + 160) {
+                        t.hitTarget(true);
+                    }
+                }
+            }
+        }
+
+
+
+        // drawing our cannon
         cannon.drawMe(canvas, Math.toDegrees(-1 * angle));
-
-        // checks if targets were hit and changes the targets color
-        if (newBall.getX() >= targetX-160 && newBall.getX() < targetX + 160
-                && newBall.getY() >= targetY-160 && newBall.getY() < targetY + 160) {
-            target.hitTarget(true);
-        } else if (newBall.getX() >= target2X-160 && newBall.getX() < target2X + 160
-                && newBall.getY() >= target2Y-160 && newBall.getY() < target2Y + 160) {
-            target2.hitTarget(true);
-        }
     }
+
 
     /**
      * Tells that we never pause.
@@ -140,19 +164,25 @@ public class CannonAnimator implements Animator {
      * so that the ball can be "fired"
      */
     public void fireCannon() {
-        count = 0;
-        newBall = new Ball(ballXPos, ballYPos, ballRadius, velocity, angle);
-        target = new Target(targetX, targetY, targetRadius);
-        target2 = new Target(target2X, target2Y, targetRadius);
-        cannon = new Cannon(cannonLeft, cannonTop, cannonRight, cannonBottom, angle);
+        Ball newBall = new Ball(cannon.getCannonCenterX(), cannon.getCannonCenterY(), velocity, angle, ballRadius, gravity);
+        cannonBalls.add(newBall);
+        count = 0; //resets the count to 0 so that the trajectory can restart
     }
 
     /**
      * Sets the angle and passes it to the seekBar
      *
-     * @param angle the angle that will be adjusted
+     * @param angle
+     *          the angle that will be adjusted
      */
     public void setAngle(double angle) {
         this.angle = angle;
     }
+
+    /**
+     * Sets the gravity and passes it to the seekBar
+     * @param gravity
+     *          the gravity that the user will adjust
+     */
+    public void setGravity(double gravity) { this.gravity = gravity; }
 }

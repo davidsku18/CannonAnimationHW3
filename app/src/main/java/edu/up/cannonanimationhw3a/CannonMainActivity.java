@@ -22,11 +22,15 @@ import android.widget.TextView;
 public class CannonMainActivity extends Activity {
 
 	private double cannonAngle;
+	private double gravity;
 	private SeekBar cannonAngleSeekBar;
+	private SeekBar gravitySeekbar;
     private CannonAnimator testAnim;
     private Button fire;
     private TextView currentAngle;
+	private TextView currentGravity;
 	protected final int MAX_ANGLE = 90;
+	protected final int MAX_GRAVITY = 30;
 
 	/**
 	 * creates an AnimationCanvas containing a TestAnimator.
@@ -39,11 +43,16 @@ public class CannonMainActivity extends Activity {
 
         fire = (Button) findViewById(R.id.fire);
         currentAngle = (TextView) findViewById(R.id.currentAngle);
+		currentGravity = (TextView) findViewById(R.id.currentGravity);
 		cannonAngleSeekBar = (SeekBar) findViewById(R.id.cannonAngleSeekBar);
+		gravitySeekbar = (SeekBar) findViewById(R.id.gravitySeekbar);
 		cannonAngleSeekBar.setMax(MAX_ANGLE);
+		gravitySeekbar.setMax(MAX_GRAVITY);
 
+		//setting listeners
         fire.setOnClickListener(new fireOnListener());
 		cannonAngleSeekBar.setOnSeekBarChangeListener(new cannonAngleSeekBarListener());
+		gravitySeekbar.setOnSeekBarChangeListener(new gravitySeekBarListener());
 
 		// Create an animation canvas and place it in the main layout
 		testAnim = new CannonAnimator();
@@ -59,6 +68,26 @@ public class CannonMainActivity extends Activity {
 			cannonAngle = progress;
             currentAngle.setText(""+cannonAngle);
             testAnim.setAngle(Math.toRadians(cannonAngle));
+		}
+
+		@Override
+		public void onStartTrackingTouch(SeekBar seekBar) {
+
+		}
+
+		@Override
+		public void onStopTrackingTouch(SeekBar seekBar) {
+
+		}
+	}
+
+	public class gravitySeekBarListener implements SeekBar.OnSeekBarChangeListener {
+
+		@Override
+		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+			gravity = progress;
+			currentGravity.setText(""+gravity);
+			testAnim.setGravity(gravity);
 		}
 
 		@Override

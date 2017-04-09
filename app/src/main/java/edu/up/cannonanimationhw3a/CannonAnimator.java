@@ -43,6 +43,7 @@ public class CannonAnimator implements Animator {
     Ball newBall = new Ball(ballXPos, ballYPos, ballRadius, velocity, angle);
     Target target = new Target(targetX, targetY, targetRadius);
     Target target2 = new Target(target2X, target2Y, targetRadius);
+    Target target3 = new Target();
 
     /**
      * Interval between animation frames: .03 seconds (i.e., about 33 times
@@ -64,6 +65,20 @@ public class CannonAnimator implements Animator {
         return Color.rgb(180, 200, 255);
     }
 
+    private void initTargets()
+    {
+        Target target1 = new Target(1000,500);
+        Target target2 = new Target(700,150);
+        Target target3 = new Target(500,1000);
+        Target target4 = new Target(1300,900);
+        Target target5 = new Target(1600,300);
+
+        targets.add(t1);
+        targets.add(t2);
+        targets.add(t3);
+        targets.add(t4);
+        targets.add(t5);
+    }
     /**
      * Action to perform on clock tick
      *
@@ -72,6 +87,9 @@ public class CannonAnimator implements Animator {
     public void tick(Canvas canvas) {
         count++;
 
+        for (Target: target) {
+            ta
+        }
         // drawing our objects
         target.drawMe(canvas);
         target2.drawMe(canvas);

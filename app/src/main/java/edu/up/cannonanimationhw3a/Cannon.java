@@ -34,12 +34,22 @@ public class Cannon {
         centerY = ((bottom-top)/2) + top;
     }
 
+    /**
+     * Gets the cannon's new x pos due to rotation
+     * @return xNew
+     *          the new x position
+     *
+     */
     public int getCannonCenterX() {
         xNew = this.left * (int)Math.cos(this.angle) - (this.top+70) * (int)Math.sin(this.angle);
         return this.xNew;
     }
 
-
+    /**
+     * Gets the cannon's new y pos due to rotation
+     * @return yNew
+     *          the new y position
+     */
     public int getCannonCenterY() {
         yNew = (this.top+70) * (int)Math.cos(this.angle) + this.left * (int)Math.sin(this.angle);
         return this.yNew;
@@ -51,10 +61,12 @@ public class Cannon {
     public void drawMe(Canvas canvas, double RotationAngle) {
         cannonDefaultPaint.setColor(Color.BLACK);
         cannonWheel.setColor(0xFF774F00);
-        centerY = ((bottom-top)/2+top);
+        centerY = ((bottom-top)/2+top); //
         canvas.save();
-        canvas.rotate((float)RotationAngle, (float)(left), (float)(centerY));// rotates the cannon's barrel when angle is adjusted
-        canvas.rotate((float)this.angle * -1, (float)(left), (float)(centerY));// rotates the cannon's barrel when angle is adjusted
+        
+        // rotates the cannon's barrel when angle is adjusted
+        canvas.rotate((float)RotationAngle, (float)(left), (float)(centerY));
+
         canvas.drawRect(left, top, right, bottom , cannonDefaultPaint);
         canvas.restore();
         canvas.drawCircle(0,bottom-50,80,cannonWheel);

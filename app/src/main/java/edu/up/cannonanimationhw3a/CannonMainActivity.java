@@ -1,6 +1,7 @@
 package edu.up.cannonanimationhw3a;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -14,9 +15,14 @@ import android.widget.TextView;
  * 
  * This is the activity for the cannon animation. It creates a AnimationCanvas
  * containing a particular Animator object
+ *
+ * PART B IMPLEMENTATIONS:
+ * - ARBITRARY NUMBER OF BALLS IN THE AIR AT ONE
+ * - ALLOW THE USER TO CHANGE THE GRAVITY
+ * - SOUND AT APPROPRIATE TIME: WHEN THE CANNON IS FIRED
  * 
- * @author Andrew Nuxoll
- * @version September 2012
+ * @author Kurtis Davidson
+ * @version April 5, 2017
  * 
  */
 public class CannonMainActivity extends Activity {
@@ -24,8 +30,8 @@ public class CannonMainActivity extends Activity {
 	private double cannonAngle;
 	private double gravity;
 	private SeekBar cannonAngleSeekBar;
-	private SeekBar gravitySeekbar;
-    private CannonAnimator testAnim;
+	private SeekBar gravitySeekBar;
+    private CannonAnimator animate;
     private Button fire;
     private TextView currentAngle;
 	private TextView currentGravity;
@@ -33,8 +39,15 @@ public class CannonMainActivity extends Activity {
 	protected final int MAX_GRAVITY = 30;
 
 	/**
-	 * creates an AnimationCanvas containing a TestAnimator.
-	 */
+	 * Creates an AnimationCanvas containing a CannonAnimator.
+     *
+     * External Citation
+     * Date: 9 April 2017
+     * Problem: Didn't know how to implement sound correctly
+     * Resource:
+     * http://stackoverflow.com/questions/18459122/play-sound-on-button-click-android
+     * Solution: I used the example code from this post.
+     */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -45,18 +58,29 @@ public class CannonMainActivity extends Activity {
         currentAngle = (TextView) findViewById(R.id.currentAngle);
 		currentGravity = (TextView) findViewById(R.id.currentGravity);
 		cannonAngleSeekBar = (SeekBar) findViewById(R.id.cannonAngleSeekBar);
-		gravitySeekbar = (SeekBar) findViewById(R.id.gravitySeekbar);
+		gravitySeekBar = (SeekBar) findViewById(R.id.gravitySeekbar);
+        final MediaPlayer mp = MediaPlayer.create(this, R.raw.cannon);
+
+        //setting max values for seekBars
 		cannonAngleSeekBar.setMax(MAX_ANGLE);
-		gravitySeekbar.setMax(MAX_GRAVITY);
+		gravitySeekBar.setMax(MAX_GRAVITY);
+
+        //sets the fire listener and calls fireCannon when pressed and plays a sound
+        fire.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View v) {
+                animate.fireCannon();
+                mp.start();
+            }
+        });
 
 		//setting listeners
-        fire.setOnClickListener(new fireOnListener());
 		cannonAngleSeekBar.setOnSeekBarChangeListener(new cannonAngleSeekBarListener());
-		gravitySeekbar.setOnSeekBarChangeListener(new gravitySeekBarListener());
+		gravitySeekBar.setOnSeekBarChangeListener(new gravitySeekBarListener());
 
 		// Create an animation canvas and place it in the main layout
-		testAnim = new CannonAnimator();
-		AnimationCanvas myCanvas = new AnimationCanvas(this, testAnim);
+		animate = new CannonAnimator();
+		AnimationCanvas myCanvas = new AnimationCanvas(this, animate);
 		LinearLayout mainLayout = (LinearLayout) this.findViewById(R.id.topLevelLayout);
 		mainLayout.addView(myCanvas);
 	}
@@ -67,7 +91,7 @@ public class CannonMainActivity extends Activity {
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 			cannonAngle = progress;
             currentAngle.setText(""+cannonAngle);
-            testAnim.setAngle(Math.toRadians(cannonAngle));
+            animate.setAngle(Math.toRadians(cannonAngle));
 		}
 
 		@Override
@@ -87,7 +111,7 @@ public class CannonMainActivity extends Activity {
 		public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 			gravity = progress;
 			currentGravity.setText(""+gravity);
-			testAnim.setGravity(gravity);
+			animate.setGravity(gravity);
 		}
 
 		@Override
@@ -101,19 +125,6 @@ public class CannonMainActivity extends Activity {
 		}
 	}
 
-	public class fireOnListener implements View.OnClickListener {
-
-        @Override
-        public void onClick(View v) {
-            if (v.getId() == fire.getId()) {
-                testAnim.fireCannon();
-            }
-        }
-    }
-
-	/**
-	 * This is the default behavior (empty cannon_main.xml)
-	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.cannon_main, menu);

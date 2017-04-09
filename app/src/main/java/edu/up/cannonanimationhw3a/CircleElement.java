@@ -19,7 +19,7 @@ public class CircleElement {
     protected int y;
 
     /**
-     * Parent ctor for Target
+     * Parent ctor
      * @param initX
      *          the X coordinate
      * @param initY

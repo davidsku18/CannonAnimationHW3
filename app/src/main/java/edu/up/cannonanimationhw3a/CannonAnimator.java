@@ -11,7 +11,7 @@ import java.util.ArrayList;
  * Animates the ball when the ball is fired from the cannon
  *
  * @author kurtisdavidson
- * @version 4/2/17.
+ * @version 4/9/17.
  */
 
 public class CannonAnimator implements Animator {
@@ -97,8 +97,8 @@ public class CannonAnimator implements Animator {
      */
     public void tick(Canvas canvas) {
 
+        count++; // increments counter for every tick call
         //draws the targets
-        count++;
         for (Target t: targets) {
             // checks if targets were hit and changes the targets color
             t.drawMe(canvas);
@@ -164,7 +164,8 @@ public class CannonAnimator implements Animator {
      * so that the ball can be "fired"
      */
     public void fireCannon() {
-        Ball newBall = new Ball(cannon.getCannonCenterX(), cannon.getCannonCenterY(), velocity, angle, ballRadius, gravity);
+        Ball newBall = new Ball(cannon.getCannonCenterX(), cannon.getCannonCenterY(), velocity,
+                angle, ballRadius, gravity);
         cannonBalls.add(newBall);
         count = 0; //resets the count to 0 so that the trajectory can restart
     }

@@ -30,7 +30,8 @@ public class Ball{
      * @param initAngle
      *          the ball's angle
      */
-    public Ball(int initX, int initY, int initVel, double initAngle, int radius, double initGravity)
+    public Ball(int initX, int initY, int initVel,
+                double initAngle, int radius, double initGravity)
     {
         this.x = initX;
         this.y = initY;
